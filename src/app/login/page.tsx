@@ -14,8 +14,10 @@ const ERRORS: Record<string, string> = {
 export default async function LoginPage({
   searchParams,
 }: PageProps<"/login">) {
-  const { error } = await searchParams;
+  const { error, detail } = await searchParams;
   const message = typeof error === "string" ? ERRORS[error] : undefined;
+  // The underlying error from the auth callback, already redacted there.
+  const details = message && typeof detail === "string" ? detail : undefined;
 
   return (
     <main className="flex flex-1 items-center justify-center bg-zinc-50 px-4 py-12">
@@ -28,12 +30,17 @@ export default async function LoginPage({
         </p>
 
         {message && (
-          <p
+          <div
             role="alert"
             className="mt-6 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
           >
-            {message}
-          </p>
+            <p>{message}</p>
+            {details && (
+              <p className="mt-1 font-mono text-xs break-words text-red-600">
+                {details}
+              </p>
+            )}
+          </div>
         )}
 
         <div className="mt-6">

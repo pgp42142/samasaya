@@ -111,3 +111,13 @@ Keep it mobile-friendly.
 ## 13
 
 commit this stage and push everything( including stage 3,4)
+
+## 14
+
+Login works on localhost but fails on https://samasaya-1.vercel.app with /login?error=auth. Supabase auth logs show GET /authorize and GET /callback for the live attempts but no POST /token, so the code is never exchanged for a session. Find what differs between localhost and production. Check:
+
+That the sign-in redirectTo uses the current site's origin, not localhost or a hardcoded URL.
+That middleware doesn't redirect /auth/callback before it runs.
+That the PKCE code verifier cookie is set and read correctly in production (secure cookies, same domain).
+Log the real error from exchangeCodeForSession and show it on the login page.
+Fix it, commit, push, and tell me what the cause was.
