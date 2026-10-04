@@ -41,3 +41,25 @@ Also give me seed data with ~20 realistic grievances across all categories.
 ## 6
 
 Commit this stage to git with a clear message.
+
+## 7
+
+push it
+
+## 8
+
+Stage 3: Build the "File a grievance" screen.
+Fields: category (the six categories), title, description, and an
+"Submit anonymously" toggle with one line explaining that resolvers won't
+see your name, but the system keeps it to prevent abuse.
+While the user types the title, show up to 3 similar open grievances in the
+same category with an Upvote button, so they can upvote instead of filing
+a duplicate.
+Enforce a limit of 5 grievances per student per day on the server.
+After submitting, show a confirmation and take the user to "My grievances".
+Keep the design clean and mobile-friendly, since most students will use
+their phones.
+
+## 9
+
+Commit Stage 3 with a clear message.
