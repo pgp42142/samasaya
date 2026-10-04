@@ -1,20 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { formatDate } from "@/lib/format";
 import type { BoardGrievance } from "@/lib/grievances";
 import { requireViewer } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
 import { StatusBadge } from "@/components/status-badge";
+import { StatusTimeline, type StatusUpdate } from "./status-timeline";
 
 export const metadata: Metadata = {
   title: "My grievances · samasaya",
 };
-
-const dateFormat = new Intl.DateTimeFormat("en-IN", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-  timeZone: "Asia/Kolkata",
-});
 
 export default async function MyGrievancesPage({
   searchParams,
@@ -29,6 +24,23 @@ export default async function MyGrievancesPage({
     .eq("is_mine", true)
     .order("created_at", { ascending: false });
   const grievances = (data ?? []) as BoardGrievance[];
+
+  const updatesByGrievance = new Map<string, StatusUpdate[]>();
+  if (grievances.length > 0) {
+    const { data: updates } = await supabase
+      .from("status_updates")
+      .select("grievance_id, new_status, comment, created_at")
+      .in(
+        "grievance_id",
+        grievances.map((g) => g.id),
+      )
+      .order("created_at", { ascending: true });
+    for (const u of (updates ?? []) as StatusUpdate[]) {
+      const list = updatesByGrievance.get(u.grievance_id) ?? [];
+      list.push(u);
+      updatesByGrievance.set(u.grievance_id, list);
+    }
+  }
 
   return (
     <div>
@@ -68,7 +80,7 @@ export default async function MyGrievancesPage({
           You haven&apos;t filed any grievances yet.
         </p>
       ) : (
-        <ul className="mt-6 space-y-3">
+        <ul className="mt-6 space-y-4">
           {grievances.map((g, i) => (
             <li
               key={g.id}
@@ -78,21 +90,35 @@ export default async function MyGrievancesPage({
                   : "border-zinc-200"
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
+                <span className="font-medium text-zinc-700">{g.category}</span>
+                <span aria-hidden="true">·</span>
+                <span>Filed {formatDate(g.created_at)}</span>
+                {g.is_anonymous && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span>Anonymous</span>
+                  </>
+                )}
+              </p>
+              <div className="mt-1 flex items-start justify-between gap-3">
                 <h2 className="font-medium text-zinc-900">{g.title}</h2>
                 <StatusBadge status={g.status} />
               </div>
-              <p className="mt-1 line-clamp-2 text-sm text-zinc-600">
+              <p className="mt-1 line-clamp-3 text-sm text-zinc-600">
                 {g.description}
               </p>
-              <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-zinc-500">
-                <span>{g.category}</span>
-                <span>{dateFormat.format(new Date(g.created_at))}</span>
-                <span>
-                  {g.upvote_count} upvote{g.upvote_count === 1 ? "" : "s"}
-                </span>
-                {g.is_anonymous && <span>Anonymous</span>}
+              <p className="mt-2 text-xs text-zinc-500">
+                {g.upvote_count} upvote{g.upvote_count === 1 ? "" : "s"}
               </p>
+
+              <div className="mt-4 border-t border-zinc-100 pt-4">
+                <StatusTimeline
+                  status={g.status}
+                  createdAt={g.created_at}
+                  updates={updatesByGrievance.get(g.id) ?? []}
+                />
+              </div>
             </li>
           ))}
         </ul>

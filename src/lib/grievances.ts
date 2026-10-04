@@ -52,3 +52,7 @@ export function startOfTodayIST(now = new Date()): Date {
   ist.setUTCHours(0, 0, 0, 0);
   return new Date(ist.getTime() - IST_OFFSET_MS);
 }
+
+export function isStatus(value: unknown): value is Status {
+  return STATUSES.includes(value as Status);
+}

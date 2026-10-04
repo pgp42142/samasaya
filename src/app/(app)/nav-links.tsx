@@ -7,12 +7,17 @@ import type { Role } from "@/lib/grievances";
 export function NavLinks({ role }: { role: Role }) {
   const pathname = usePathname();
   const links = [
-    ...(role === "student" ? [{ href: "/new", label: "File a grievance" }] : []),
-    { href: "/my", label: "My grievances" },
+    { href: "/", label: "Board" },
+    ...(role === "student"
+      ? [
+          { href: "/new", label: "File a grievance" },
+          { href: "/my", label: "My grievances" },
+        ]
+      : []),
   ];
 
   return (
-    <nav className="-mb-px flex gap-1 sm:mb-0">
+    <nav className="-mb-px flex gap-1 overflow-x-auto whitespace-nowrap sm:mb-0">
       {links.map(({ href, label }) => {
         const active = pathname === href;
         return (

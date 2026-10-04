@@ -23,14 +23,22 @@ export default async function AppLayout({
           <div className="hidden flex-1 sm:block">
             <NavLinks role={viewer.role} />
           </div>
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+          <div className="flex min-w-0 items-center gap-2">
+            <span
+              className="max-w-40 truncate text-sm text-zinc-500"
+              title={viewer.email}
             >
-              Log out
-            </button>
-          </form>
+              {viewer.name}
+            </span>
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
+              >
+                Logout
+              </button>
+            </form>
+          </div>
         </div>
         <div className="mx-auto max-w-2xl px-4 sm:hidden">
           <NavLinks role={viewer.role} />

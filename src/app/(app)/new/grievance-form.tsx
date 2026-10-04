@@ -13,6 +13,7 @@ import {
 } from "@/lib/grievances";
 import { createClient } from "@/lib/supabase/client";
 import { StatusBadge } from "@/components/status-badge";
+import { UpvoteButton, UpvoteCount } from "@/components/upvote-button";
 import { submitGrievance, type SubmitState } from "./actions";
 
 export function GrievanceForm({ remaining }: { remaining: number }) {
@@ -196,51 +197,23 @@ function SimilarList({ grievances }: { grievances: BoardGrievance[] }) {
 }
 
 function SimilarItem({ grievance }: { grievance: BoardGrievance }) {
-  const [upvoted, setUpvoted] = useState(grievance.has_upvoted);
-  const [count, setCount] = useState(grievance.upvote_count);
-  const [busy, setBusy] = useState(false);
-
-  async function toggle() {
-    setBusy(true);
-    const supabase = createClient();
-    const { error } = upvoted
-      ? await supabase.from("upvotes").delete().eq("grievance_id", grievance.id)
-      : await supabase.from("upvotes").insert({ grievance_id: grievance.id });
-    if (!error) {
-      setUpvoted(!upvoted);
-      setCount((n) => n + (upvoted ? -1 : 1));
-    }
-    setBusy(false);
-  }
-
   return (
     <li className="flex items-start gap-3 rounded-lg bg-white p-3 shadow-sm">
       <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-zinc-900">{grievance.title}</p>
         <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
           <StatusBadge status={grievance.status} />
-          <span>
-            {count} upvote{count === 1 ? "" : "s"}
-          </span>
+          {grievance.is_mine && <span>Filed by you</span>}
         </div>
       </div>
       {grievance.is_mine ? (
-        <span className="shrink-0 py-1.5 text-xs text-zinc-500">Filed by you</span>
+        <UpvoteCount count={grievance.upvote_count} />
       ) : (
-        <button
-          type="button"
-          onClick={toggle}
-          disabled={busy}
-          aria-pressed={upvoted}
-          className={`flex min-h-9 shrink-0 items-center gap-1 rounded-lg border px-3 text-sm font-medium transition disabled:opacity-60 ${
-            upvoted
-              ? "border-zinc-900 bg-zinc-900 text-white"
-              : "border-zinc-300 bg-white text-zinc-700 hover:border-zinc-400"
-          }`}
-        >
-          <span aria-hidden="true">▲</span>
-          {upvoted ? "Upvoted" : "Upvote"}
-        </button>
+        <UpvoteButton
+          grievanceId={grievance.id}
+          initialUpvoted={grievance.has_upvoted}
+          initialCount={grievance.upvote_count}
+        />
       )}
     </li>
   );

@@ -63,3 +63,24 @@ their phones.
 ## 9
 
 Commit Stage 3 with a clear message.
+
+## 10
+
+Stage 4: Build the public board and "My grievances" page.
+
+Public board: show all non-anonymous grievances and anonymous ones without
+any author info. Each card shows category, title, status, upvote count, and
+how long ago it was filed. Add filters for category and status, and sort by
+most upvoted or newest. Students can upvote from here (one upvote per person).
+
+My grievances: show only the logged-in student's grievances, including
+anonymous ones, each with a status timeline (Submitted → Acknowledged →
+In progress → Resolved) built from status_updates, showing the date and
+the resolver's public comment for each change.
+
+Add a simple navigation bar: Board, File a grievance, My grievances, Logout.
+Keep it mobile-friendly.
+
+## 11
+
+Commit Stage 4 with a clear message.
