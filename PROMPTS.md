@@ -15,3 +15,29 @@ Commit everything and push this project to https://github.com/pgp42142/samasaya.
 ## 4
 
 Commit everything and push this project to https://github.com/pgp42142/samasaya. Make sure .env.local is not    included.
+
+## 5
+
+Stage 2: Create the database schema as a SQL migration file I can run in the
+Supabase SQL Editor.
+
+Tables:
+- users (id, email, name, role, department) — role is student, resolver or admin
+- grievances (id, author_id, category, title, description, is_anonymous,
+  status, created_at)
+- upvotes (user_id, grievance_id) with a unique constraint on the pair
+- status_updates (grievance_id, updated_by, old_status, new_status,
+  comment, created_at)
+
+Categories: Hostel, Mess, IT, PGP Office, Sports, Clubs & Committees.
+Each category routes to a resolver with the matching department.
+Statuses: Submitted, Acknowledged, In progress, Resolved.
+
+Add row-level security so students see their own grievances and the public
+board, resolvers see only their department's grievances and never see
+author_id on anonymous ones, and admins see everything.
+Also give me seed data with ~20 realistic grievances across all categories.
+
+## 6
+
+Commit this stage to git with a clear message.
