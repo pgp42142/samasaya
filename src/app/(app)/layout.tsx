@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireViewer } from "@/lib/session";
 import { signOut } from "../actions";
 import { NavLinks } from "./nav-links";
+import { ViewAsSwitcher } from "./view-as-switcher";
 
 export default async function AppLayout({
   children,
@@ -13,6 +14,9 @@ export default async function AppLayout({
   return (
     <div className="flex flex-1 flex-col">
       <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/95 backdrop-blur">
+        {viewer.realRole === "admin" && (
+          <ViewAsSwitcher role={viewer.role} department={viewer.department} />
+        )}
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-4 px-4 pt-3 sm:py-3">
           <Link
             href="/"

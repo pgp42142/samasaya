@@ -9,8 +9,12 @@ export type Viewer = {
   id: string;
   email: string;
   name: string;
+  // Effective role and department: for an admin using "View as", the view
+  // they chose. The database applies the same rule, so this only drives the UI.
   role: Role;
   department: Category | null;
+  // The role stored on the account, ignoring "View as".
+  realRole: Role;
 };
 
 // The signed-in user and their profile, or a redirect to /login.
@@ -28,9 +32,12 @@ export const requireViewer = cache(async (): Promise<Viewer> => {
 
   const { data: profile } = await supabase
     .from("users")
-    .select("name, role, department")
+    .select("name, role, department, view_as_role, view_as_department")
     .eq("id", user.id)
     .maybeSingle();
+
+  const realRole = (profile?.role as Role | undefined) ?? "student";
+  const viewingAs = realRole === "admin" && profile?.view_as_role != null;
 
   return {
     id: user.id,
@@ -40,7 +47,11 @@ export const requireViewer = cache(async (): Promise<Viewer> => {
       user.user_metadata?.full_name ??
       user.user_metadata?.name ??
       user.email!,
-    role: (profile?.role as Role | undefined) ?? "student",
-    department: (profile?.department as Category | null) ?? null,
+    role: viewingAs ? (profile!.view_as_role as Role) : realRole,
+    department:
+      ((viewingAs ? profile!.view_as_department : profile?.department) as
+        | Category
+        | null) ?? null,
+    realRole,
   };
 });

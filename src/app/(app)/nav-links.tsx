@@ -13,7 +13,7 @@ export function NavLinks({ role }: { role: Role }) {
           { href: "/new", label: "File a grievance" },
           { href: "/my", label: "My grievances" },
         ]
-      : []),
+      : [{ href: "/dashboard", label: "Dashboard" }]),
   ];
 
   return (

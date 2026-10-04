@@ -84,3 +84,30 @@ Keep it mobile-friendly.
 ## 11
 
 Commit Stage 4 with a clear message.
+
+## 12
+
+Stage 5: Build the resolver dashboard and an admin role switcher.
+
+Resolver dashboard (resolvers and admins only):
+- Resolvers see only grievances in their own department; admins see all,
+  with a category filter.
+- Never show author info on anonymous grievances, even to admins in the UI.
+- Show counts at the top: Submitted, Acknowledged, In progress, Resolved.
+- Each grievance shows title, description, category, upvotes and age, and
+  highlights anything still "Submitted" after 3 days as overdue.
+- Resolvers can change the status and add a public comment; every change
+  is recorded in status_updates with who made it and when.
+- Sort by most upvoted by default, so the most widespread problems come first.
+
+Admin role switcher:
+- Only visible to admins: a "View as" control to switch between Student,
+  a resolver for any department, and Admin, so I can demo every view with
+  one account.
+- The switch must be enforced on the server, and only real admins can use it.
+
+Keep it mobile-friendly.
+
+## 13
+
+commit this stage and push everything( including stage 3,4)
